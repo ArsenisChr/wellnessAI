@@ -89,12 +89,12 @@ health-app/
 
 👥 Team
 
-The Couch Potatoes
-Arsenis Chrysikopoulos
-Miltos Mourtias
-Manolis Papakyriakou
-Nikos Kafantaris
-Lefteris Tsimplekas
+The Couch Potatoes:
+Arsenis Chrysikopoulos,
+Miltos Mourtias,
+Manolis Papakyriakou,
+Nikos Kafantaris,
+Lefteris Tsimplekas,
 ## 📦 Installation & Setup
 
 1.  Clone the repository.
