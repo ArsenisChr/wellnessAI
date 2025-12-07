@@ -3,6 +3,9 @@ import datetime
 import json
 import uuid
 import re
+import io
+import pandas as pd
+import pdfplumber
 
 LANGFLOW_BASE_URL = "https://hackathon-langflow-aah4bgc4hrashthc.canadacentral-01.azurewebsites.net"
 FILES_ENDPOINT = f"{LANGFLOW_BASE_URL}/api/v2/files"
@@ -12,6 +15,58 @@ headers = {
     }
 WORKFLOW_ID_INJECTION = "f29e42c4-f045-4eea-bf3c-0073d3bba7fd"
 WORKFLOW_ID_EVENTS = "5fe87fa9-87f5-43e1-9822-b0d06951bdef"
+
+ALIASES = {
+    "chol": ["Cholesterol (Chol)", "Cholesterol", "Chol"],
+    "hdl":  ["HDL Cholesterol", "HDL"],
+    "ldl":  ["LDL Cholesterol", "LDL"],
+    "triglycerides": ["Triglycerides (TG)", "Triglycerides", "TG"],
+}
+
+def extract_kv_from_pdf(pdf_file: bytes | str) -> dict:
+    text = ""
+    
+    # If it's bytes, wrap in BytesIO
+    if isinstance(pdf_file, bytes):
+        file_obj = io.BytesIO(pdf_file)
+    else:
+        file_obj = pdf_file
+
+    with pdfplumber.open(file_obj) as pdf:
+        for page in pdf.pages:
+            text += "\n" + (page.extract_text() or "")
+
+    # βρίσκει γραμμές τύπου: "<test name> <value> <unit> ..."
+    # π.χ. "LDL Cholesterol 2.81 mmol/L < 3.36"
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+
+    found = {}
+    for line in lines:
+        m = re.search(r"^(.*?)(\d+(?:[.,]\d+)?)\s+([A-Za-z/]+)\b", line)
+        if not m:
+            continue
+        test_name = m.group(1).strip()
+        value = float(m.group(2).replace(",", "."))
+        unit = m.group(3).strip()
+
+        # match σε alias
+        for key, names in ALIASES.items():
+            if any(test_name.lower().startswith(n.lower()) for n in names):
+                found[key] = {"value": value, "unit": unit, "raw": line}
+                break
+
+    return found
+
+def pdf_to_df(pdf_file: bytes | str) -> pd.DataFrame:
+    # Use the regex extraction logic instead of table extraction
+    found_data = extract_kv_from_pdf(pdf_file)
+    
+    # Create transposed DataFrame: one row, columns are the keys (chol, hdl, etc.)
+    row = {k: (found_data.get(k, {}).get("value", None)) for k in ALIASES.keys()}
+    df = pd.DataFrame([row])
+    
+    return df
+
 
 def upload_pdf(pdf_bytes: bytes, filename: str) -> requests.Response:
     """
@@ -36,7 +91,17 @@ def upload_pdf(pdf_bytes: bytes, filename: str) -> requests.Response:
         print(f"Error {resp.status_code}: {resp.text}")
         resp.raise_for_status()
     
+    # Προαιρετικά: Εξαγωγή σε CSV για debugging ή τοπική χρήση
+    try:
+        df = pdf_to_df(pdf_bytes)
+        df.to_csv(filename.replace(".pdf", ".csv"), index=False)
+        print("CSV saved successfully.")
+    except Exception as e:
+        print(f"Failed to convert PDF to CSV: {e}")
+
+    # Return the JSON response for Langflow workflow
     return resp.json()
+    
 
 
 def upload_json(json_data: bytes | dict, filename: str) -> requests.Response:
