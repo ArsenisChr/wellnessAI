@@ -12,8 +12,16 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"  # Replace with a secure key in production
 
 # ---- DATABASE SETUP ----
-# Default to users.db in the current directory if not specified
-DB_PATH = Path(os.environ.get("DB_PATH", "users.db"))
+# Azure Web Apps persistence logic
+if "WEBSITE_SITE_NAME" in os.environ:
+    # We are running on Azure
+    # Use /home to persist data across deployments
+    DEFAULT_DB_PATH = "/home/users.db"
+else:
+    # Local development
+    DEFAULT_DB_PATH = "users.db"
+
+DB_PATH = Path(os.environ.get("DB_PATH", DEFAULT_DB_PATH))
 
 def get_connection():
     conn = sqlite3.connect(str(DB_PATH))
