@@ -43,10 +43,19 @@
                 <div class="col border p-2" style="min-height: 100px; font-size: 0.9rem; {% if day.month != month %}background-color: #f9f9f9; color: #ccc;{% endif %}">
                     <div class="text-end fw-bold">{{ day.day }}</div>
                     {% if day.isoformat() in month_events %}
-                        {% for event_name in month_events[day.isoformat()] %}
-                        <div class="badge bg-info text-dark text-wrap w-100 mb-1" style="font-size: 0.75rem;">
-                            {{ event_name }}
-                        </div>
+                        {% for event in month_events[day.isoformat()] %}
+                        <a href="#" class="badge bg-info text-dark text-wrap w-100 mb-1 text-decoration-none event-badge" 
+                           style="font-size: 0.75rem;"
+                           data-bs-toggle="modal" 
+                           data-bs-target="#eventModal"
+                           data-title="{{ event.name }}"
+                           data-desc="{{ event.description }}"
+                           data-date="{{ event.date }}"
+                           data-address="{{ event.address }}"
+                           data-accessible="{{ event.accessible }}"
+                           data-priceless="{{ event.priceless }}">
+                            {{ event.name }}
+                        </a>
                         {% endfor %}
                     {% endif %}
                 </div>
@@ -62,9 +71,22 @@
         <div class="alert alert-light border">
             {% set today_str = today.isoformat() %}
             {% if today_str in month_events %}
-                {% for name in month_events[today_str] %}
-                <div class="alert alert-success mb-2">
-                    <i class="fas fa-check-circle me-2"></i> {{ name }}
+                {% for event in month_events[today_str] %}
+                <div class="alert alert-success mb-2 d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-check-circle me-2"></i> {{ event.name }}
+                    </div>
+                    <button class="btn btn-sm btn-outline-success event-badge"
+                           data-bs-toggle="modal" 
+                           data-bs-target="#eventModal"
+                           data-title="{{ event.name }}"
+                           data-desc="{{ event.description }}"
+                           data-date="{{ event.date }}"
+                           data-address="{{ event.address }}"
+                           data-accessible="{{ event.accessible }}"
+                           data-priceless="{{ event.priceless }}">
+                        Λεπτομέρειες
+                    </button>
                 </div>
                 {% endfor %}
             {% else %}
@@ -73,5 +95,84 @@
         </div>
     </div>
 </div>
+
+<!-- Event Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-purple text-white">
+        <h5 class="modal-title" id="eventModalLabel">Event Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h4 id="modalEventTitle" class="fw-bold mb-3 text-purple"></h4>
+        
+        <div class="mb-3">
+            <i class="fas fa-clock text-muted me-2"></i> 
+            <span id="modalEventDate" class="fw-bold"></span>
+        </div>
+        
+        <div class="mb-3">
+            <i class="fas fa-map-marker-alt text-danger me-2"></i>
+            <span id="modalEventAddress"></span>
+        </div>
+
+        <p id="modalEventDesc" class="lead fs-6"></p>
+        
+        <hr>
+        
+        <div class="d-flex justify-content-start gap-3">
+            <span class="badge bg-success p-2" id="modalAccessible" style="display:none">
+                <i class="fas fa-wheelchair me-1"></i> Προσβάσιμο
+            </span>
+            <span class="badge bg-warning text-dark p-2" id="modalPriceless" style="display:none">
+                <i class="fas fa-tag me-1"></i> Δωρεάν
+            </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Κλείσιμο</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var eventModal = document.getElementById('eventModal');
+    eventModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        
+        var title = button.getAttribute('data-title');
+        var desc = button.getAttribute('data-desc');
+        var date = button.getAttribute('data-date');
+        var address = button.getAttribute('data-address');
+        var accessible = button.getAttribute('data-accessible');
+        var priceless = button.getAttribute('data-priceless');
+
+        // Update Modal Content
+        document.getElementById('modalEventTitle').textContent = title;
+        document.getElementById('modalEventDesc').textContent = desc || "Δεν υπάρχει περιγραφή.";
+        document.getElementById('modalEventDate').textContent = date;
+        document.getElementById('modalEventAddress').textContent = address || "Online / Δεν ορίστηκε";
+        
+        // Show/Hide Badges
+        var accBadge = document.getElementById('modalAccessible');
+        if (accessible && (accessible.toLowerCase() === 'yes' || accessible.toLowerCase() === 'true')) {
+            accBadge.style.display = 'inline-block';
+        } else {
+            accBadge.style.display = 'none';
+        }
+
+        var priceBadge = document.getElementById('modalPriceless');
+        if (priceless && (priceless.toLowerCase() === 'yes' || priceless.toLowerCase() === 'true')) {
+            priceBadge.style.display = 'inline-block';
+            priceBadge.textContent = "Δωρεάν";
+        } else {
+            priceBadge.style.display = 'none'; // Or show price if available
+        }
+    });
+});
+</script>
 {% endblock %}
 

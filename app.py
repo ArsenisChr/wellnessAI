@@ -214,7 +214,7 @@ def load_year_events(username, year):
     
     c.execute(
         """
-        SELECT name, date, text
+        SELECT name, date, text, address, zip, accessible, priceless, relevance_score
         FROM events
         WHERE username = ?
           AND date >= ?
@@ -230,6 +230,18 @@ def load_year_events(username, year):
         name = row['name']
         date_str = row['date']
         text = row['text']
+        # Helper dict for extra info
+        event_data = {
+            "name": name or "Event",
+            "date": date_str,
+            "description": text or "",
+            "address": row['address'] or "",
+            "zip": row['zip'] or "",
+            "accessible": row['accessible'] or "No",
+            "priceless": row['priceless'] or "No",
+            "relevance": row['relevance_score']
+        }
+        
         try:
             try:
                 date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d %H:%M").date()
@@ -241,11 +253,7 @@ def load_year_events(username, year):
         date_str_key = date_obj.strftime("%Y-%m-%d")
         if date_str_key not in events_by_date:
             events_by_date[date_str_key] = []
-        events_by_date[date_str_key].append({
-            "name": name or "Event",
-            "date": date_str_key,
-            "description": text or ""
-        })
+        events_by_date[date_str_key].append(event_data)
     return events_by_date
 
 def get_events_for_month(username, year, month):
@@ -256,9 +264,8 @@ def get_events_for_month(username, year, month):
     for date_str, events_list in year_events.items():
         date_obj = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
         if date_obj.year == year and date_obj.month == month:
-            event_names = [e.get("name", "Event") for e in events_list]
-            if event_names:
-                month_events[date_str] = event_names
+            # Return the full event objects list, not just names
+            month_events[date_str] = events_list
     return month_events
 
 
