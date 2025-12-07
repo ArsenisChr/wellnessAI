@@ -104,10 +104,7 @@ Lefteris Tsimplekas,
     ```bash
     pip install -r requirements.txt
     ```
-3.  Train the ML model (once) to generate artifacts:
-    ```bash
-    python cluster_classify_algorithm.py
-    ```
+3.  Train-ready XGBoost model for classification.
 4.  Run the Flask app:
     ```bash
     python app.py
