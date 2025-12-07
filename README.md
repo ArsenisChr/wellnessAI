@@ -1,14 +1,51 @@
-# 🩺 HealthLab Coach
+# 🧠 WellnessAI  
+### AI-powered Wellness & Activity Recommendations  
+Built by **The Couch Potatoes** — AI Hackathon Unboxed (PwC Greece)
 
-A smart, AI-powered health companion that analyzes your lifestyle, lab results, and personal preferences to classify your health profile and recommend personalized wellness events.
+---
 
-## 🚀 Features
+## 🚀 Overview
+**WellnessAI** είναι μια AI εφαρμογή που προτείνει προσωποποιημένες δραστηριότητες ευεξίας με βάση:
 
-*   **AI Lifestyle Clustering**: Classifies users into dynamic clusters (e.g., "Couch Potato", "Ironman") using Machine Learning (XGBoost) based on their profile and lab data.
-*   **Smart PDF Analysis**: Extracts key biomarkers (Cholesterol, HDL, LDL, etc.) from uploaded PDF lab reports using OCR and regex processing.
-*   **Personalized Recommendations**: Suggests local wellness events (Yoga, Hiking, etc.) tailored to the user's cluster and location via Langflow AI workflows.
-*   **Accessibility First**: Includes a built-in accessibility widget for high contrast, font resizing, and link highlighting.
-*   **Cloud Ready**: Designed for deployment on Azure Web Apps with persistent storage support.
+- Το **προφίλ υγείας** του χρήστη  
+- Την **ανάλυση PDF εξετάσεων** (LangFlow)  
+- Μια **fun AI κατηγοριοποίηση**  
+- Τα **ενδιαφέροντα** και την **πόλη** του  
+
+Ο κάθε χρήστης ταξινομείται σε μία από τις 4 κατηγορίες:
+🥔 Couch Potato · 🙂 Just a Man/Woman · 🏃‍♂️ Athlete · 🦾 Iron Man
+
+Από αυτή την κατηγορία + τα health data παράγονται προτάσεις δραστηριοτήτων.
+
+---
+
+## ✨ Key Features
+
+### 🔐 Login / Registration  
+Ασφαλής πρόσβαση & δημιουργία λογαριασμού.
+
+### 👤 User Profile  
+Εισαγωγή ηλικίας, πόλης, παθήσεων & ενδιαφερόντων.
+
+### 📄 Medical PDF Upload  
+AI parsing μέσω LangFlow → εξαγωγή βασικών ιατρικών τιμών.
+
+### 🎭 Fun Categorization  
+Το AI αναθέτει κατηγορία fitness (π.χ. Couch Potato → Athlete).
+
+### 🎯 Event Recommendations  
+Προσωποποιημένες προτάσεις δραστηριοτήτων σύμφωνα με:
+- κατηγορία fitness  
+- ενδιαφέροντα  
+- επίπεδο υγείας  
+- τοποθεσία  
+
+### 📅 Calendar View  
+Οι προτάσεις εμφανίζονται σε ημερολόγιο για εύκολη πλοήγηση.
+
+---
+
+## 🏛️ Architecture (Compact)
 
 ## 🛠️ Tech Stack
 
@@ -50,6 +87,14 @@ health-app/
 4.  **Event Recommendation**: The app communicates with a Langflow agent to fetch personalized event recommendations based on the user's location and interests.
 5.  **Dashboard**: The user sees their "Cluster Level", progress, and a calendar of recommended events.
 
+👥 Team
+
+The Couch Potatoes
+Arsenis Chrysikopoulos
+Miltos Mourtias
+Manolis Papakyriakou
+Nikos Kafantaris
+Lefteris Tsimplekas
 ## 📦 Installation & Setup
 
 1.  Clone the repository.
@@ -66,3 +111,7 @@ health-app/
     python app.py
     ```
 5.  Visit `http://localhost:5000` in your browser.
+
+   🏆 For
+
+AI Hackathon Unboxed — PwC Greece 2025
