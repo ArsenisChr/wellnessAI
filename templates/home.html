@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron text-center mt-5">
+    <h1 class="display-4">Καλωσόρισες, {{ user }} 👋</h1>
+    {% if not has_profile %}
+        <p class="lead mt-4 text-warning fw-bold">
+            ➤ Παρακαλώ μεταβείτε στο <a href="{{ url_for('profile') }}">Προφίλ Χρήστη</a> για να συμπληρώσετε τα απαραίτητα στοιχεία.
+        </p>
+    {% else %}
+        <p class="lead mt-4">
+            Η κατηγορία σας είναι: <strong>Couch Potato!</strong> 🥔
+        </p>
+    {% endif %}
+    <hr class="my-4">
+    <p>Εξερεύνησε τις προτάσεις events ή διαχειρίσου το προφίλ σου.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('events') }}" role="button">Προτάσεις Event</a>
+</div>
+{% endblock %}
+

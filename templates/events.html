@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📅 Προτάσεις Event & Ημερολόγιο</h2>
+        
+        <form class="d-flex gap-2 align-items-center" method="GET" action="{{ url_for('events') }}">
+            <select name="year" class="form-select w-auto" onchange="this.form.submit()">
+                {% for y in range(2020, 2101) %}
+                <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            <select name="month" class="form-select w-auto" onchange="this.form.submit()">
+                {% for m in range(1, 13) %}
+                <option value="{{ m }}" {% if m == month %}selected{% endif %}>
+                    {{ ["Ιανουάριος", "Φεβρουάριος", "Μάρτιος", "Απρίλιος", "Μάιος", "Ιούνιος", "Ιούλιος", "Αύγουστος", "Σεπτέμβριος", "Οκτώβριος", "Νοέμβριος", "Δεκέμβριος"][m-1] }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <!-- Headers -->
+            <div class="row text-center fw-bold mb-3">
+                <div class="col">Δευ</div>
+                <div class="col">Τρι</div>
+                <div class="col">Τετ</div>
+                <div class="col">Πεμ</div>
+                <div class="col">Παρ</div>
+                <div class="col text-primary">Σαβ</div>
+                <div class="col text-danger">Κυρ</div>
+            </div>
+            
+            <hr>
+
+            {% for week in month_days %}
+            <div class="row mb-2">
+                {% for day in week %}
+                <div class="col border p-2" style="min-height: 100px; font-size: 0.9rem; {% if day.month != month %}background-color: #f9f9f9; color: #ccc;{% endif %}">
+                    <div class="text-end fw-bold">{{ day.day }}</div>
+                    {% if day.isoformat() in month_events %}
+                        {% for event_name in month_events[day.isoformat()] %}
+                        <div class="badge bg-info text-dark text-wrap w-100 mb-1" style="font-size: 0.75rem;">
+                            {{ event_name }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Today's Events -->
+    <div class="mt-5">
+        <h4>Προτάσεις/Ραντεβού για: {{ today.strftime('%d/%m/%Y') }}</h4>
+        <div class="alert alert-light border">
+            {% set today_str = today.isoformat() %}
+            {% if today_str in month_events %}
+                {% for name in month_events[today_str] %}
+                <div class="alert alert-success mb-2">
+                    <i class="fas fa-check-circle me-2"></i> {{ name }}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted mb-0">Δεν υπάρχουν καταχωρημένα events για τη σημερινή ημερομηνία.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthLab Coach</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding-top: 20px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            color: #d1d1d1;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            color: white;
+            background-color: #495057;
+        }
+        .sidebar a.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    {% if session.user %}
+    <div class="sidebar">
+        <h3 class="text-center mb-4">🩺 HealthLab</h3>
+        <div class="text-center mb-3">
+            <small>Logged in as: <strong>{{ session.user }}</strong></small>
+        </div>
+        <a href="{{ url_for('index') }}" class="{{ 'active' if request.path == '/' else '' }}"><i class="fas fa-home me-2"></i> Αρχική</a>
+        <a href="{{ url_for('events') }}" class="{{ 'active' if request.path == '/events' else '' }}"><i class="fas fa-calendar-alt me-2"></i> Προτάσεις Event</a>
+        <a href="{{ url_for('profile') }}" class="{{ 'active' if request.path == '/profile' else '' }}"><i class="fas fa-user me-2"></i> Προφίλ Χρήστη</a>
+        <a href="{{ url_for('about') }}" class="{{ 'active' if request.path == '/about' else '' }}"><i class="fas fa-info-circle me-2"></i> About</a>
+        <a href="{{ url_for('logout') }}" class="text-danger mt-4"><i class="fas fa-sign-out-alt me-2"></i> Αποσύνδεση</a>
+    </div>
+    {% endif %}
+
+    <div class="{% if session.user %}content{% else %}container mt-5{% endif %}">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
