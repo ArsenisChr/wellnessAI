@@ -253,7 +253,10 @@ def login():
         password = request.form.get('password')
         if check_login(username, password):
             session['user'] = username
-            flash(f"Καλώς ήρθες, {username}!", "success")
+            if not user_has_profile(username):
+                flash("Παρακαλώ συμπληρώστε το προφίλ σας για να δείτε τα αποτελέσματα!", "warning")
+            else:
+                flash(f"Καλώς ήρθες, {username}!", "success")
             return redirect(url_for('index'))
         else:
             flash("Λάθος στοιχεία σύνδεσης. Προσπάθησε ξανά.", "danger")
