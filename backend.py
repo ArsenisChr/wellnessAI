@@ -20,7 +20,7 @@ headers = {"x-api-key": LANGFLOW_API_KEY}
 
 # Τα IDs που έχεις (μπορεί να είναι σωστά ή όχι). Αν παίρνεις HTML, τρέξε list_flows() να πάρεις σωστά.
 WORKFLOW_ID_INJECTION = "f29e42c4-f045-4eea-bf3c-0073d3dba7fd"  # αν έχεις άλλο, βάλε το σωστό
-WORKFLOW_ID_EVENTS = "5fe87fa9-87f5-43e1-9822-b0d06951bdef"
+WORKFLOW_ID_EVENTS = "954bac75-5c07-46ed-a004-1eee4d97e609"
 
 # Αυτά πρέπει να ταιριάζουν με το node id στο Langflow graph (tweaks keys)
 TWEAK_FILE_NODE_INJECTION = "File-Kgijo"
