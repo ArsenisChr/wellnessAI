@@ -15,7 +15,7 @@ import pdfplumber
 LANGFLOW_BASE_URL = "https://hackathon-langflow-aah4bgc4hrashthc.canadacentral-01.azurewebsites.net"
 FILES_ENDPOINT = f"{LANGFLOW_BASE_URL}/api/v2/files"
 
-LANGFLOW_API_KEY = "sk-WGPeqWt71U0ICYZd1L2iz-76K-BrMAeF88X5gKpHKGw"
+LANGFLOW_API_KEY = "sk-zInmweyJvfAQ7pGVyhedWykf_o7xC0-GANfSQEUiPhI"
 headers = {"x-api-key": LANGFLOW_API_KEY}
 
 # Τα IDs που έχεις (μπορεί να είναι σωστά ή όχι). Αν παίρνεις HTML, τρέξε list_flows() να πάρεις σωστά.
